@@ -1,0 +1,5 @@
+; $Id$
+name = HEIDI POS Service
+description = HEIDI POS Services
+package = H_POS
+core = 6.x
