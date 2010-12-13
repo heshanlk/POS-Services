@@ -4,59 +4,54 @@
  * Implementation of hook_schema().
  */
 function hpos_services_schema() {
-
-    $schema['hpos_keys'] = array(
-        'description' => 'hpos_keys table has the pos registration keys',
-        'fields' => array(
-            'id' => array(
-                'description' => 'Primary column for hpos_keys table',
-                'type' => 'serial',
-                'unsigned' => TRUE,
-                'not null' => TRUE),
-            'pos_key' => array(
-                'description' => 'column',
-                'type' => 'varchar',
-                'length' => 50,
-                'not null' => FALSE,
-                'default' => ''
-            ),
-            'owner ' => array(
-                'description' => 'column',
-                'type' => 'varchar',
-                'length' => 50,
-                'not null' => FALSE,
-                'default' => ''),
-            'owner_email' => array(
-                'description' => 'column',
-                'type' => 'varchar',
-                'length' => 50,
-                'not null' => FALSE,
-                'default' => ''),
-            'owner_email' => array(
-                'description' => 'column',
-                'type' => 'varchar',
-                'length' => 50,
-                'not null' => FALSE,
-                'default' => ''),
-            'customer_id' => array(
-                'description' => 'column',
-                'type' => 'int',
-                'size' => 'small',
-                'unsigned' => TRUE,
-                'not null' => TRUE,
-                'default' => 0)
-        ),
-        'primary key' => array('id'),
-        'unique keys' => array(
-            'key_unique' => array('key')
-        ),
-    );
-    return $schema;
+  $schema['hpos_keys'] = array(
+    'description' => 'hpos_keys table has the pos registration keys',
+    'fields' => array(
+      'id' => array(
+        'description' => 'Primary column for hpos_keys table',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE),
+      'license_key' => array(
+        'description' => 'column',
+        'type' => 'varchar',
+        'length' => 50,
+        'not null' => FALSE,
+        'default' => ''
+      ),
+      'status' => array(
+        'description' => 'column',
+        'type' => 'int',
+        'size' => 'small',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0),
+      'uid' => array(
+        'description' => 'Registered user ID',
+        'type' => 'int',
+        'size' => 'small',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0)
+    ),
+    'primary key' => array('id'),
+    'unique keys' => array(
+      'key_unique' => array('key')
+    ),
+  );
+  return $schema;
 }
 
 /**
  * Implementation of hook_install().
  */
 function hpos_services_install() {
-    drupal_install_schema('hpos_services');
+  drupal_install_schema('hpos_services');
+}
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function hpos_services_uninstall() {
+  drupal_uninstall_schema('hpos_services');
 }

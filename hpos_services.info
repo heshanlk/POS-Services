@@ -1,5 +1,6 @@
 ; $Id$
 name = HEIDI POS Service
 description = HEIDI POS Services
-package = H_POS
+package = Services - services
+dependencies[] = services
 core = 6.x
