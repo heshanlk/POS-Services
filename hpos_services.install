@@ -13,14 +13,14 @@ function hpos_services_schema() {
         'unsigned' => TRUE,
         'not null' => TRUE),
       'license_key' => array(
-        'description' => 'column',
+        'description' => 'Column to record all the license keys',
         'type' => 'varchar',
         'length' => 50,
         'not null' => FALSE,
         'default' => ''
       ),
       'status' => array(
-        'description' => 'column',
+        'description' => 'Key status to active or blocked',
         'type' => 'int',
         'size' => 'small',
         'unsigned' => TRUE,
