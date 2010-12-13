@@ -68,8 +68,10 @@ function hpos_services_user($type, &$edit, &$user, $category = NULL) {
       break;
     case 'update':
     case 'insert':
-      db_query("DELETE FROM  {hpos_keys} WHERE uid = %d", $user->uid);
-      db_query("INSERT INTO {hpos_keys} (license_key, status, uid) VALUES ('%s', %d, %d)", $edit['license_key'], BLOCKED, $user->uid);
+      if (!empty($edit['license_key'])) {
+        db_query("DELETE FROM  {hpos_keys} WHERE uid = %d", $user->uid);
+        db_query("INSERT INTO {hpos_keys} (license_key, status, uid) VALUES ('%s', %d, %d)", $edit['license_key'], BLOCKED, $user->uid);
+      }
       break;
     case 'view':
       $license_key = db_fetch_object(db_query('SELECT license_key FROM {hpos_keys} WHERE uid = %d', $user->uid));
@@ -89,11 +91,11 @@ function hpos_services_user($type, &$edit, &$user, $category = NULL) {
       );
 
       $form['wrapper']['license_key'] = array(
-        '#type' => (user_access('change license key')) ? 'textfield' : 'value',
+        '#type' => (user_access('change license key')) ? 'textfield' : 'item',
         '#title' => check_plain('HEIDI POS License Key'),
         '#value' => isset($edit['license_key']) ? $edit['license_key'] : md5(strtotime('now')),
         '#maxlength' => 255,
-        '#description' => 'HEIDI Point of Sale License Key',
+//        '#description' => 'HEIDI Point of Sale License Key',
         '#required' => TRUE,
       );
       return $form;
