@@ -4,7 +4,7 @@
  * Implementation of hook_perm().
  */
 function hpos_services_perm() {
-    return array('key validation');
+  return array('key validation');
 }
 
 /**
@@ -12,45 +12,41 @@ function hpos_services_perm() {
  */
 function hpos_services_service() {
 
-    return array(
-        // reseller  functions
-        // add
+  return array(
+    array(
+      '#method' => 'hpos.key_setup',
+      '#callback' => 'hpos_services_get_key_status',
+      '#file' => array('file' => 'inc', 'module' => 'hpos_services'),
+      '#access callback' => 'hpos_services_access',
+      '#access arguments' => array('key validation'),
+      '#args' => array(
         array(
-            '#method' => 'hpos.key_setup',
-            '#callback' => 'hpos_services_get_key_status',
-            '#file' => array('file' => 'inc', 'module' => 'hpos_services'),
-            '#access callback' => 'hpos_services_access',
-            '#access arguments' => array('key validation'),
-            '#args' => array(
-                array(
-                    '#name' => 'key',
-                    '#type' => 'string',
-                    '#description' => t('Name if reseller'),
-                ),
-                array(
-                    '#name' => 'owner',
-                    '#type' => 'string',
-                    '#description' => t('Comment if reseller'),
-                ),
-                 array(
-                    '#name' => 'email',
-                    '#type' => 'string',
-                    '#description' => t('Comment if reseller'),
-                ),
-                 array(
-                    '#name' => 'mobile',
-                    '#type' => 'string',
-                    '#description' => t('Comment if reseller'),
-                )
-            ),
-            '#return' => 'struct',
-            '#help' => 'Provide all required arguments'
+          '#name' => 'key',
+          '#type' => 'string',
+          '#description' => t('License key'),
         ),
-    );
+        array(
+          '#name' => 'owner',
+          '#type' => 'string',
+          '#description' => t('Comment if reseller'),
+        ),
+        array(
+          '#name' => 'email',
+          '#type' => 'string',
+          '#description' => t('Comment if reseller'),
+        ),
+        array(
+          '#name' => 'mobile',
+          '#type' => 'string',
+          '#description' => t('Comment if reseller'),
+        )
+      ),
+      '#return' => 'struct',
+      '#help' => 'Provide all required arguments'
+    ),
+  );
 }
 
-
-
 function hpos_services_access() {
-    return TRUE;
+  return TRUE;
 }
