@@ -7,7 +7,7 @@ define('BLOCKED', 0);
  * Implementation of hook_perm().
  */
 function hpos_services_perm() {
-  return array('key validation');
+  return array('key validation', 'change license key');
 }
 
 /**
@@ -58,33 +58,50 @@ function hpos_services_access() {
  * Implementation of hook_user().
  */
 function hpos_services_user($type, &$edit, &$user, $category = NULL) {
+//  echo '<pre>';
   switch ($type) {
     case 'load':
       // Only add links if we are on the user 'view' page.
       if (arg(0) != 'user' || arg(2)) {
         return;
       }
-      return profile_load_profile($user);
-    case 'register':
-      return profile_form_profile($edit, $user, $category, TRUE);
+      break;
     case 'update':
-      return profile_save_profile($edit, $user, $category);
     case 'insert':
-      return profile_save_profile($edit, $user, $category, TRUE);
+      db_query("DELETE FROM  {hpos_keys} WHERE uid = %d", $user->uid);
+      db_query("INSERT INTO {hpos_keys} (license_key, status, uid) VALUES ('%s', %d, %d)", $edit['license_key'], BLOCKED, $user->uid);
+      break;
     case 'view':
       $license_key = db_fetch_object(db_query('SELECT license_key FROM {hpos_keys} WHERE uid = %d', $user->uid));
       $user->content['summary']['license_key'] = array(
         '#type' => 'user_profile_item',
         '#title' => t('HEIDI POS License Key'),
         // l() escapes the attributes, so we should not escape !username here.
-        '#value' => '',
+        '#value' => '<code>' . (isset($license_key->license_key) ? $license_key->license_key : 'No license key defined') . '<code>',
         '#attributes' => array('class' => 'license_key'),
       );
+      break;
+    case 'register':
     case 'form':
-      return profile_form_profile($edit, $user, $category);
+      $form['wrapper'] = array(
+        '#type' => 'fieldset',
+        '#title' => check_plain('HEIDI POS License Key'),
+      );
+
+      $form['wrapper']['license_key'] = array(
+        '#type' => (user_access('change license key')) ? 'textfield' : 'value',
+        '#title' => check_plain('HEIDI POS License Key'),
+        '#value' => isset($edit['license_key']) ? $edit['license_key'] : md5(strtotime('now')),
+        '#maxlength' => 255,
+        '#description' => 'HEIDI Point of Sale License Key',
+        '#required' => TRUE,
+      );
+      return $form;
+      break;
     case 'validate':
-      return profile_validate_profile($edit, $category);
+      return;
     case 'delete':
       db_query('DELETE FROM {hpos_keys} WHERE uid = %d', $user->uid);
+      break;
   }
 }
