@@ -1,5 +1,8 @@
 <?php
 
+define('ACTIVE', 1);
+define('BLOCKED', 0);
+
 /**
  * Implementation of hook_perm().
  */
@@ -49,4 +52,39 @@ function hpos_services_service() {
 
 function hpos_services_access() {
   return TRUE;
+}
+
+/**
+ * Implementation of hook_user().
+ */
+function hpos_services_user($type, &$edit, &$user, $category = NULL) {
+  switch ($type) {
+    case 'load':
+      // Only add links if we are on the user 'view' page.
+      if (arg(0) != 'user' || arg(2)) {
+        return;
+      }
+      return profile_load_profile($user);
+    case 'register':
+      return profile_form_profile($edit, $user, $category, TRUE);
+    case 'update':
+      return profile_save_profile($edit, $user, $category);
+    case 'insert':
+      return profile_save_profile($edit, $user, $category, TRUE);
+    case 'view':
+      $license_key = db_fetch_object(db_query('SELECT license_key FROM {hpos_keys} WHERE uid = %d', $user->uid));
+      $user->content['summary']['license_key'] = array(
+        '#type' => 'user_profile_item',
+        '#title' => t('HEIDI POS License Key'),
+        // l() escapes the attributes, so we should not escape !username here.
+        '#value' => '',
+        '#attributes' => array('class' => 'license_key'),
+      );
+    case 'form':
+      return profile_form_profile($edit, $user, $category);
+    case 'validate':
+      return profile_validate_profile($edit, $category);
+    case 'delete':
+      db_query('DELETE FROM {hpos_keys} WHERE uid = %d', $user->uid);
+  }
 }
