@@ -11,7 +11,16 @@ function hpos_services_schema() {
         'description' => 'Primary column for hpos_keys table',
         'type' => 'serial',
         'unsigned' => TRUE,
-        'not null' => TRUE),
+        'not null' => TRUE
+      ),
+      'uid' => array(
+        'description' => 'Registered user ID',
+        'type' => 'int',
+        'size' => 'small',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0
+      ),
       'license_key' => array(
         'description' => 'Column to record all the license keys',
         'type' => 'varchar',
@@ -24,14 +33,15 @@ function hpos_services_schema() {
         'size' => 'small',
         'unsigned' => TRUE,
         'not null' => TRUE,
-        'default' => 0),
-      'uid' => array(
-        'description' => 'Registered user ID',
+        'default' => 0
+      ),
+      'activated' => array(
+        'description' => t('Activated the account'),
         'type' => 'int',
-        'size' => 'small',
-        'unsigned' => TRUE,
+        'size' => 11,
         'not null' => TRUE,
-        'default' => 0)
+        'default' => 0
+      ),
     ),
     'primary key' => array('id'),
     'unique keys' => array(
@@ -53,4 +63,15 @@ function hpos_services_install() {
  */
 function hpos_services_uninstall() {
   drupal_uninstall_schema('hpos_services');
+}
+
+/**
+ * Update 6405
+ * dropping video_rendering table and creating video_files
+ * @return <type>
+ */
+function hpos_services_update_6101() {
+  $ret = array();
+  db_add_column($ret, 'hpos_keys', 'activated', 'int', array('null' => TRUE));
+  return $ret;
 }

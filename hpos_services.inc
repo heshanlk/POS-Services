@@ -15,7 +15,7 @@ function hpos_services_get_key_status($key, $owner = NULL, $email = NULL, $mobil
   $count = $countResult['key_count'];
   $return_array["result"] = 5001;
   if ($count == 1) {
-    if (db_query('UPDATE {hpos_keys} SET  status = %d WHERE license_key = \'%s\'', ACTIVE, $key)) {
+    if (db_query('UPDATE {hpos_keys} SET  status = %d, activated = %d WHERE license_key = \'%s\'', ACTIVE, time(), $key)) {
       $return_array["key_status"] = 1001;
       $return_array["status_message"] = TRUE;
       return $return_array;
