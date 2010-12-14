@@ -25,12 +25,11 @@ function hpos_services_schema() {
         'description' => 'Column to record all the license keys',
         'type' => 'varchar',
         'length' => 255,
-        'default' => ''
       ),
       'status' => array(
         'description' => 'Key status to active or blocked',
         'type' => 'int',
-        'size' => 'small',
+        'size' => 'tiny',
         'unsigned' => TRUE,
         'not null' => TRUE,
         'default' => 0
@@ -38,10 +37,13 @@ function hpos_services_schema() {
       'activated' => array(
         'description' => t('Activated the account'),
         'type' => 'int',
-        'size' => 11,
         'not null' => TRUE,
         'default' => 0
       ),
+    ),
+    'indexes' => array(
+      'status' => array('status'),
+      'license_key' => array('license_key'),
     ),
     'primary key' => array('id'),
     'unique keys' => array(
